@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF7F9"/><stop offset="1" stop-color="#F7D7E3"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g)"/>
+  <circle cx="140" cy="120" r="110" fill="#F7A8C4" opacity=".35"/>
+  <circle cx="680" cy="500" r="150" fill="#1F7A5C" opacity=".12"/>
+  <g transform="translate(400 290)">
+    <rect x="-210" y="-110" width="420" height="250" rx="18" fill="#4A1D33"/>
+    <rect x="-190" y="-90" width="380" height="210" rx="10" fill="#FFF7F9"/>
+    <rect x="-170" y="-70" width="120" height="12" rx="6" fill="#F7A8C4"/>
+    <rect x="-170" y="-45" width="200" height="12" rx="6" fill="#E5C6D3"/>
+    <rect x="-170" y="-20" width="160" height="12" rx="6" fill="#E5C6D3"/>
+    <rect x="-170" y="10" width="90" height="12" rx="6" fill="#1F7A5C"/>
+    <rect x="-170" y="35" width="240" height="12" rx="6" fill="#E5C6D3"/>
+    <rect x="-170" y="60" width="180" height="12" rx="6" fill="#E5C6D3"/>
+    <rect x="90" y="-70" width="90" height="90" rx="10" fill="#F7A8C4" opacity=".6"/>
+  </g>
+  <path d="M405 100 L355 225 L400 225 L370 320 L450 195 L405 195 L440 100 Z" fill="#F7A8C4" stroke="#4A1D33" stroke-width="10" stroke-linejoin="round"/>
+  <text x="400" y="480" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="34" font-weight="700" fill="#4A1D33">NovaVolt · Software</text>
+  <text x="400" y="520" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="20" fill="#4A1D33" opacity=".75">Imagen de referencia</text>
+</svg>

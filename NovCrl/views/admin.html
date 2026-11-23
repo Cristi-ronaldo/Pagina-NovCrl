@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de administración — NovaVolt</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body class="admin-body">
+
+  <!-- ============================== GATE ============================== -->
+  <div class="admin-gate" id="adminGate">
+    <form class="gate-card" id="gateForm" novalidate>
+      <div class="gate-brand">
+        <img src="/img/logo.svg" alt="NovaVolt" width="56" height="56">
+        <div>
+          <strong>NovaVolt Admin</strong>
+          <span>Acceso restringido</span>
+        </div>
+      </div>
+      <h1>Inicia sesión como administrador</h1>
+      <p>Este panel permite gestionar productos, usuarios, mensajes y la configuración del sitio.</p>
+      <div class="gate-error" id="gateError" role="alert"></div>
+      <div class="field">
+        <label for="gateEmail">Correo</label>
+        <input type="email" id="gateEmail" autocomplete="username" placeholder="admin@novavolt.co" required>
+      </div>
+      <div class="field">
+        <label for="gatePassword">Contraseña</label>
+        <input type="password" id="gatePassword" autocomplete="current-password" placeholder="Tu contraseña" required>
+      </div>
+      <button class="btn btn--primary btn--block" id="gateSubmit" type="submit">Entrar al panel</button>
+      <a class="gate-back" href="/">← Volver al sitio público</a>
+    </form>
+  </div>
+
+  <!-- ============================== APP =============================== -->
+  <div class="admin-shell" id="adminApp" hidden>
+    <aside class="admin-sidebar" id="adminSidebar">
+      <a class="admin-brand" href="/">
+        <img src="/img/logo.svg" alt="" width="44" height="44">
+        <span>Nova<em>Volt</em></span>
+      </a>
+      <nav class="admin-nav" aria-label="Secciones del panel">
+        <button class="nav-item active" type="button" data-view="dashboard"><span>📊</span> Resumen</button>
+        <button class="nav-item" type="button" data-view="productos"><span>📦</span> Productos</button>
+        <button class="nav-item" type="button" data-view="usuarios"><span>👥</span> Usuarios</button>
+        <button class="nav-item" type="button" data-view="mensajes"><span>💬</span> Mensajes <b class="nav-badge" id="navUnread" hidden>0</b></button>
+        <button class="nav-item" type="button" data-view="ordenes"><span>🧾</span> Pedidos</button>
+        <button class="nav-item" type="button" data-view="config"><span>⚙️</span> Configuración</button>
+      </nav>
+      <div class="admin-sidebar-foot">
+        <div class="admin-who"><span class="avatar" id="adminAvatar">AD</span><div><strong id="adminName">Admin</strong><small>Administrador</small></div></div>
+        <a href="/" class="side-link">🌐 Ver sitio</a>
+        <button type="button" class="side-link" id="adminLogout">🚪 Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <button class="admin-burger" id="adminBurger" type="button" aria-label="Abrir menú">☰</button>
+        <div>
+          <h1 id="viewTitle">Resumen general</h1>
+          <p id="viewSubtitle">Métricas en vivo de NovaVolt</p>
+        </div>
+        <div class="topbar-actions">
+          <span class="live-dot" title="Chat en línea"></span>
+          <a class="btn btn--ghost btn--sm" href="/" target="_blank" rel="noopener">Ver sitio ↗</a>
+        </div>
+      </header>
+
+      <main class="admin-content">
+        <!-- DASHBOARD -->
+        <section class="view active" id="view-dashboard">
+          <div class="metric-grid">
+            <div class="admin-metric"><span class="m-ico">👥</span><div><strong id="mUsers">—</strong><small>Usuarios registrados</small></div></div>
+            <div class="admin-metric"><span class="m-ico">📦</span><div><strong id="mProducts">—</strong><small>Productos activos</small></div></div>
+            <div class="admin-metric"><span class="m-ico">🧾</span><div><strong id="mOrders">—</strong><small>Pedidos registrados</small></div></div>
+            <div class="admin-metric"><span class="m-ico">💰</span><div><strong id="mRevenue">—</strong><small>Ingresos acumulados</small></div></div>
+            <div class="admin-metric"><span class="m-ico">👁️</span><div><strong id="mVisits">—</strong><small>Visitas al sitio</small></div></div>
+            <div class="admin-metric"><span class="m-ico">💬</span><div><strong id="mUnread">—</strong><small>Mensajes sin leer</small></div></div>
+          </div>
+
+          <div class="admin-cols">
+            <div class="panel">
+              <div class="panel-head"><h2>Productos más vendidos</h2><span class="panel-tag">Top 5</span></div>
+              <div class="top-products" id="topProducts"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><h2>Ventas por categoría</h2></div>
+              <div class="cat-bars" id="catBars"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>Últimos pedidos</h2></div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead><tr><th>#</th><th>Producto</th><th>Cliente</th><th>Cant.</th><th>Total</th><th>Fecha</th></tr></thead>
+                <tbody id="recentOrders"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PRODUCTOS -->
+        <section class="view" id="view-productos">
+          <div class="view-toolbar">
+            <div>
+              <h2>Gestión de productos</h2>
+              <p>Crea, edita, desactiva o elimina productos. Los cambios se reflejan de inmediato en el catálogo público.</p>
+            </div>
+            <button class="btn btn--primary" id="btnNewProduct" type="button">＋ Nuevo producto</button>
+          </div>
+          <div class="panel">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Ventas</th><th>Rating</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="productsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- USUARIOS -->
+        <section class="view" id="view-usuarios">
+          <div class="view-toolbar">
+            <div><h2>Usuarios</h2><p>Consulta las cuentas registradas y cambia su rol. No puedes cambiar tu propio rol.</p></div>
+          </div>
+          <div class="panel">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Pedidos</th><th>Gastado</th><th>Registro</th></tr></thead>
+                <tbody id="usersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- MENSAJES -->
+        <section class="view" id="view-mensajes">
+          <div class="view-toolbar">
+            <div><h2>Bandeja de soporte</h2><p>Responde en vivo a los mensajes de los clientes. Mientras estés en el panel, el bot deja de responder automáticamente.</p></div>
+          </div>
+          <div class="chat-admin-grid">
+            <div class="panel threads-panel">
+              <div class="panel-head"><h2>Conversaciones</h2></div>
+              <div class="threads-list" id="threadsList"></div>
+            </div>
+            <div class="panel admin-chat-panel">
+              <div class="panel-head"><h2 id="chatUserTitle">Selecciona una conversación</h2><span class="panel-tag" id="chatUserEmail"></span></div>
+              <div class="admin-chat-body" id="adminChatBody">
+                <div class="chat-placeholder">Elige un cliente de la lista para ver y responder sus mensajes.</div>
+              </div>
+              <form class="admin-reply" id="adminReplyForm">
+                <label for="adminReplyInput" style="position:absolute;left:-9999px">Respuesta</label>
+                <input type="text" id="adminReplyInput" maxlength="1000" placeholder="Escribe una respuesta…" autocomplete="off" disabled>
+                <button class="btn btn--primary" type="submit" id="adminReplySend" disabled>Enviar</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- PEDIDOS -->
+        <section class="view" id="view-ordenes">
+          <div class="view-toolbar">
+            <div><h2>Pedidos</h2><p>Historial de compras registradas desde el catálogo (últimos 100).</p></div>
+          </div>
+          <div class="panel">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead><tr><th>#</th><th>Producto</th><th>Cliente</th><th>Correo</th><th>Cant.</th><th>Total</th><th>Fecha</th></tr></thead>
+                <tbody id="ordersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONFIGURACIÓN -->
+        <section class="view" id="view-config">
+          <div class="view-toolbar">
+            <div><h2>Configuración del sitio</h2><p>Edita los textos del hero, la sección Nosotros, los datos de contacto y las frases de la franja.</p></div>
+          </div>
+          <form class="panel settings-form" id="settingsForm">
+            <div class="form-error" id="settingsError" role="alert"></div>
+            <div class="settings-grid">
+              <div class="field"><label for="sHeroBadge">Texto del badge del hero</label><input type="text" id="sHeroBadge" maxlength="120"></div>
+              <div class="field"><label for="sHeroTitulo">Título del hero</label><input type="text" id="sHeroTitulo" maxlength="120"></div>
+              <div class="field field--full"><label for="sHeroSub">Subtítulo del hero</label><textarea id="sHeroSub" rows="3" maxlength="600"></textarea></div>
+              <div class="field"><label for="sNosotrosTitulo">Título de Nosotros</label><input type="text" id="sNosotrosTitulo" maxlength="120"></div>
+              <div class="field"><label for="sDireccion">Dirección</label><input type="text" id="sDireccion" maxlength="160"></div>
+              <div class="field field--full"><label for="sNosotrosTexto">Texto de Nosotros</label><textarea id="sNosotrosTexto" rows="5" maxlength="4000"></textarea></div>
+              <div class="field"><label for="sWhatsapp">WhatsApp</label><input type="text" id="sWhatsapp" maxlength="40"></div>
+              <div class="field"><label for="sCorreo">Correo de contacto</label><input type="email" id="sCorreo" maxlength="120"></div>
+              <div class="field field--full"><label for="sEnvio">Texto de envío y garantía</label><textarea id="sEnvio" rows="2" maxlength="400"></textarea></div>
+              <div class="field field--full"><label for="sFrases">Frases de la franja (una por línea, mínimo 6)</label><textarea id="sFrases" rows="7" maxlength="1200"></textarea></div>
+            </div>
+            <div class="settings-actions">
+              <button class="btn btn--primary" type="submit" id="btnSaveSettings">Guardar configuración</button>
+              <span class="settings-note">Los cambios se aplican al recargar el sitio público.</span>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================= MODAL PRODUCTO ======================== -->
+  <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+    <div class="modal-card admin-modal">
+      <button class="modal-close" type="button" data-close-modal aria-label="Cerrar">✕</button>
+      <div class="admin-modal-head">
+        <h2 id="productModalTitle">Nuevo producto</h2>
+        <p>Completa la información. Los campos marcados con * son obligatorios.</p>
+      </div>
+      <form id="productForm" class="admin-modal-body">
+        <div class="form-error" id="productFormError" role="alert"></div>
+        <input type="hidden" id="pId">
+        <div class="settings-grid">
+          <div class="field field--full"><label for="pNombre">Nombre *</label><input type="text" id="pNombre" maxlength="120" required></div>
+          <div class="field"><label for="pCategoria">Categoría *</label>
+            <select id="pCategoria" required>
+              <option value="moto">Moto</option><option value="auto">Auto</option>
+              <option value="bici">Bici</option><option value="software">Software</option>
+            </select>
+          </div>
+          <div class="field"><label for="pPrecio">Precio en COP *</label><input type="number" id="pPrecio" min="0" step="1000" required></div>
+          <div class="field"><label for="pStock">Stock *</label><input type="number" id="pStock" min="0" step="1" required></div>
+          <div class="field"><label for="pRating">Rating (0 a 5) *</label><input type="number" id="pRating" min="0" max="5" step="0.1" required></div>
+          <div class="field field--full"><label for="pImagen">URL de imagen (vacío usa el fallback local)</label><input type="text" id="pImagen" maxlength="500" placeholder="https://images.unsplash.com/..."></div>
+          <div class="field field--full"><label for="pDescripcion">Descripción *</label><textarea id="pDescripcion" rows="3" maxlength="600" required></textarea></div>
+          <div class="field field--full"><label for="pSpecs">Ficha técnica (una línea por dato: Clave: Valor)</label><textarea id="pSpecs" rows="5" placeholder="Motor: 3.000 W&#10;Autonomía: 85 km"></textarea></div>
+          <div class="field field--full checkbox-field"><label><input type="checkbox" id="pActivo" checked> Producto activo (visible en el catálogo)</label></div>
+        </div>
+        <div class="admin-modal-actions">
+          <button class="btn btn--ghost" type="button" data-close-modal>Cancelar</button>
+          <button class="btn btn--primary" type="submit" id="btnSaveProduct">Guardar producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="adminToast"></div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

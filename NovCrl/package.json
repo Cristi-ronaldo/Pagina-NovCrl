@@ -1,0 +1,30 @@
+{
+  "name": "novavolt",
+  "version": "1.0.0",
+  "description": "NovaVolt — software y movilidad eléctrica para Colombia",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node db.js --force"
+  },
+  "keywords": [
+    "electric",
+    "colombia",
+    "express",
+    "sqlite"
+  ],
+  "author": "NovaVolt",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.3.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-session": "^1.18.0"
+  },
+  "allowScripts": {
+    "bcrypt@5.1.1": true,
+    "better-sqlite3@11.10.0": true
+  }
+}
